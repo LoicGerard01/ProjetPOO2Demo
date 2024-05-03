@@ -15,7 +15,6 @@ public class Main {
         // Identifiants de compte Outlook
         String username = "";
         String password = "";
-
         // Destinataire de l'email
         String to = "";
 
