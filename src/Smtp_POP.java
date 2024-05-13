@@ -1,6 +1,7 @@
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -14,11 +15,9 @@ public class Smtp_POP {
         String pop3Host = "outlook.office365.com";
         String pop3Port = "995"; // Port POP3 (995 avec SSL)
 
-        // Identifiants de compte Outlook
-        String username = "";
-        String password = "";
+
         // Destinataire de l'email
-        String to = "";
+        String to = "loicgerardtest@outlook.com";
 
         // Propriétés pour configurer la session SMTP
         Properties smtpProps = new Properties();
@@ -26,6 +25,17 @@ public class Smtp_POP {
         smtpProps.put("mail.smtp.port", smtpPort);
         smtpProps.put("mail.smtp.auth", "true");
         smtpProps.put("mail.smtp.starttls.enable", "true");
+
+        try (FileInputStream configFileStream = new FileInputStream("config.properties")) {
+            smtpProps.load(configFileStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Identifiants de compte Outlook
+        String username = smtpProps.getProperty("username");
+        String password = smtpProps.getProperty("password");
 
         // Propriétés pour configurer la session POP3
         Properties pop3Props = new Properties();

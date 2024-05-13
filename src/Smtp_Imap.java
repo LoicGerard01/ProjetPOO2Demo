@@ -1,6 +1,7 @@
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -14,11 +15,8 @@ public class Smtp_Imap {
         String imapHost = "outlook.office365.com";
         String imapPort = "993"; // Port IMAP (993 avec SSL)
 
-        // Identifiants de compte Outlook
-        String username = "";
-        String password = "";
         // Destinataire de l'email
-        String to = "";
+        String to = "loicgerardtest@outlook.com";
 
         // Propriétés pour configurer la session SMTP
         Properties smtpProps = new Properties();
@@ -26,6 +24,17 @@ public class Smtp_Imap {
         smtpProps.put("mail.smtp.port", smtpPort);
         smtpProps.put("mail.smtp.auth", "true");
         smtpProps.put("mail.smtp.starttls.enable", "true");
+
+
+        try (FileInputStream configFileStream = new FileInputStream("config.properties")) {
+            smtpProps.load(configFileStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String username = smtpProps.getProperty("username");
+        String password = smtpProps.getProperty("password");
 
         // Propriétés pour configurer la session IMAP
         Properties imapProps = new Properties();
@@ -48,8 +57,8 @@ public class Smtp_Imap {
             message.setSubject("Ceci est un test");
             message.setText("Bonjour,\n\nCe mail est envoyé depuis l'API JavaMail.");
 
-            Transport.send(message);
-            System.out.println("Mail envoyé avec succès.");
+          //  Transport.send(message);
+          //  System.out.println("Mail envoyé avec succès.");
 
             // Créer une session IMAP pour récupérer les emails
             Store imapStore = Session.getInstance(imapProps).getStore("imaps");

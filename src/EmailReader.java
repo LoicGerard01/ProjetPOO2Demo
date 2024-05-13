@@ -1,12 +1,24 @@
 import javax.mail.*;
 import javax.mail.internet.MimeMessage;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 public class EmailReader {
     public static void main(String[] args) {
+
+        String configFile = "config.properties";
+        Properties props = new Properties();
+        try (FileInputStream inputStream = new FileInputStream(configFile)) {
+            props.load(inputStream);
+        } catch (IOException e) {
+            System.out.println("Erreur lors de la lecture du fichier de configuration : " + e.getMessage());
+            return;
+        }
+
         String host = "outlook.office365.com";
-        String userName = " ";
-        String password = " ";
+        String userName = props.getProperty("username");
+        String password = props.getProperty("password");
 
         Properties properties = new Properties();
         properties.setProperty("mail.store.protocol", "imap");

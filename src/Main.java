@@ -1,5 +1,7 @@
 import javax.mail.*;
 import javax.mail.internet.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 import javax.mail.Session;
 
@@ -9,14 +11,23 @@ public class Main {
         String smtpHost = "smtp.office365.com";
         String smtpPort = "587"; // Port SMTP (587 avec TLS)
 
-        // Identifiants de compte Outlook
-        String username = "";
-        String password = "";
+
         // Destinataire de l'email
-        String to = "";
+        String to = "loicgerardtest@outlook.com";
 
         // Propriétés pour configurer la session SMTP
         Properties smtpProps = new Properties();
+        try (FileInputStream configFileStream = new FileInputStream("config.properties")) {
+            smtpProps.load(configFileStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        // Identifiants de compte Outlook
+        String username = smtpProps.getProperty("username");
+        String password = smtpProps.getProperty("password");
+
+
         smtpProps.put("mail.smtp.host", smtpHost);
         smtpProps.put("mail.smtp.port", smtpPort);
         smtpProps.put("mail.smtp.auth", "true");
@@ -38,9 +49,9 @@ public class Main {
             message.setSubject("Ceci est un test");
             message.setText("Bonjour,\n\nCe mail est envoyé depuis l'API JavaMail.");
 
-            // Transport.send(message);
+            Transport.send(message);
             System.out.println("Mail envoyé avec succès.");
-
+            
         } catch (MessagingException e) {
             e.printStackTrace();
         }
